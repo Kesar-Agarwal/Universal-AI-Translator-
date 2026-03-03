@@ -10,8 +10,8 @@ import gc
 # --- 1. SETTINGS ---
 st.set_page_config(page_title="SpeakSync AI", page_icon="🎙️", layout="centered")
 
-st.markdown("<h1 style='text-align: center; color: violet;'>🎙️ SpeakSync AI</h1>", unsafe_allow_html=True)
-st.caption("Speak Locally, Communicate Globally", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #007BFF;'>🎙️ SpeakSync AI</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: gray; font-size: 14px;'>Speak. Sync. Translate.</p>", unsafe_allow_html=True)
 st.divider()
 
 # --- 2. INITIALIZE HISTORY ---
