@@ -68,9 +68,9 @@ if final_path:
     gc.collect() 
     torch.cuda.empty_cache() if torch.cuda.is_available() else None 
 
-    original_text = ""
-    translated_text = ""
-    detected_lang_name = ""
+    if 'original_text' not in locals(): original_text = ""
+    if 'translated_text' not in locals(): translated_text = ""
+    if 'detected_lang_name' not in locals(): detected_lang_name = ""
 
     with st.status("🧠 AI Processing (Base Model)...") as status:
         try:
