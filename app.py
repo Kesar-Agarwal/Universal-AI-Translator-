@@ -18,6 +18,7 @@ try:
 except Exception:
     st.error("⚠️ API Key missing in Secrets.")
     st.stop()
+    
 
 @st.cache_resource(ttl=3600) # Safety Valve: Reload model every hour to clear RAM leaks
 def load_whisper():
@@ -27,7 +28,28 @@ def load_whisper():
 whisper_model = load_whisper()
 
 # --- 3. UI LAYOUT ---
-LANGUAGES = {"Auto-Detect": "auto", "English": "en", "Hindi": "hi", "Spanish": "es", "French": "fr"}
+LANGUAGES = {
+    "Auto-Detect": "auto",
+    "English": "en",
+    "Hindi": "hi",
+    "Spanish": "es",
+    "French": "fr",
+    "German": "de",
+    "Japanese": "ja",
+    "Korean": "ko",
+    "Chinese (Mandarin)": "zh-cn",
+    "Arabic": "ar",
+    "Russian": "ru",
+    "Portuguese": "pt",
+    "Italian": "it",
+    "Bengali": "bn",
+    "Tamil": "ta",
+    "Telugu": "te",
+    "Marathi": "mr",
+    "Gujarati": "gu",
+    "Urdu": "ur",
+    "Turkish": "tr"
+}
 
 if 'src_lang' not in st.session_state: st.session_state.src_lang = "Auto-Detect"
 if 'target_lang' not in st.session_state: st.session_state.target_lang = "English"
@@ -38,7 +60,7 @@ col_from, col_swap, col_to = st.columns([4, 1, 4], vertical_alignment="bottom")
 with col_from:
     src_lang = st.selectbox("From:", list(LANGUAGES.keys()), key="src_lang")
 with col_swap:
-    if st.button("🔄Swap", use_container_width=True) and st.session_state.src_lang != "Auto-Detect":
+    if st.button("🔄", use_container_width=True) and st.session_state.src_lang != "Auto-Detect":
         st.session_state.src_lang, st.session_state.target_lang = st.session_state.target_lang, st.session_state.src_lang
         st.rerun()
 with col_to:
