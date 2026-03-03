@@ -65,12 +65,13 @@ elif audio_file:
 
 if final_path:
     # CLEAR RAM IMMEDIATELY BEFORE STARTING
-    gc.collect() 
-    torch.cuda.empty_cache() if torch.cuda.is_available() else False
+    gc.collect()
+    if torch.cuda.is_available(): torch.cuda.empty_cache()
 
-    if 'original_text' not in locals(): original_text = ""
-    if 'translated_text' not in locals(): translated_text = ""
-    if 'detected_lang_name' not in locals(): detected_lang_name = ""
+    original_text = locals().get('original_text', "")
+    translated_text = locals().get('translated_text', "")
+    detected_lang_name = locals().get('detected_lang_name', "")
+
 
     with st.status("🧠 AI Processing (Base Model)...") as status:
         try:
