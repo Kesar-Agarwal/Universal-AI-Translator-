@@ -33,12 +33,12 @@ if 'src_lang' not in st.session_state: st.session_state.src_lang = "Auto-Detect"
 if 'target_lang' not in st.session_state: st.session_state.target_lang = "English"
 
 st.title("🌍 Universal AI Translator")
-col_from, col_swap, col_to = st.columns([5, 2, 5], vertical_alignment="bottom")
+col_from, col_swap, col_to = st.columns([4, 1, 4], vertical_alignment="bottom")
 
 with col_from:
     src_lang = st.selectbox("From:", list(LANGUAGES.keys()), key="src_lang")
 with col_swap:
-    if st.button("🔄") and st.session_state.src_lang != "Auto-Detect":
+    if st.button("🔄Swap", use_container_width=True) and st.session_state.src_lang != "Auto-Detect":
         st.session_state.src_lang, st.session_state.target_lang = st.session_state.target_lang, st.session_state.src_lang
         st.rerun()
 with col_to:
