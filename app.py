@@ -104,7 +104,7 @@ if final_path:
         st.chat_message("assistant").write(translated_text)
         st.audio("out.mp3", autoplay=True)
         
-    if os.path.exists(final_path): os.remove(final_path)
+        if os.path.exists(final_path): os.remove(final_path)
 else:
     st.info("💡 Record or upload to begin.")
             
