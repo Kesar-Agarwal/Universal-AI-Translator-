@@ -8,7 +8,11 @@ import os
 import gc
 
 # --- 1. SETTINGS ---
-st.set_page_config(page_title="Universal AI Translator", page_icon="🌍")
+st.set_page_config(page_title="SpeakSync AI", page_icon="🎙️", layout="centered")
+
+st.markdown("<h1 style='text-align: center; color: #FF4B4B;'>🎙️ SpeakSync AI</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-size: 18px;'>Speak Locally, Communicate Globally</p>", unsafe_allow_html=True)
+st.divider()
 
 # --- 2. INITIALIZE HISTORY ---
 if 'history' not in st.session_state:
