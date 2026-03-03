@@ -66,7 +66,7 @@ elif audio_file:
 if final_path:
     # CLEAR RAM IMMEDIATELY BEFORE STARTING
     gc.collect() 
-    torch.cuda.empty_cache() if torch.cuda.is_available() else None 
+    torch.cuda.empty_cache() if torch.cuda.is_available() else False
 
     if 'original_text' not in locals(): original_text = ""
     if 'translated_text' not in locals(): translated_text = ""
