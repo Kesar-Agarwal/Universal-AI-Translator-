@@ -10,7 +10,11 @@ import gc
 # --- 1. SETTINGS ---
 st.set_page_config(page_title="Universal AI Translator", page_icon="🌍")
 
-# --- 2. API & MODEL SETUP ---
+# --- 2. INITIALIZE HISTORY ---
+if 'history' not in st.session_state:
+    st.session_state.history = []
+    
+# --- 3. API & MODEL SETUP ---
 try:
     GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY_N"]
     genai.configure(api_key=GOOGLE_API_KEY)
@@ -19,7 +23,7 @@ except Exception:
     st.error("⚠️ API Key missing in Secrets.")
     st.stop()
     
-
+    
 @st.cache_resource(ttl=3600) # Safety Valve: Reload model every hour to clear RAM leaks
 def load_whisper():
     # Base is better for translation but heavier on RAM
@@ -27,7 +31,7 @@ def load_whisper():
 
 whisper_model = load_whisper()
 
-# --- 3. UI LAYOUT ---
+# --- 4. UI LAYOUT ---
 LANGUAGES = {
     "Auto-Detect": "auto",
     "English": "en",
@@ -74,7 +78,7 @@ with col_mic:
 with col_up:
     audio_file = st.file_uploader("📤 Upload", type=["mp3", "wav", "m4a"])
 
-# --- 4. ENGINE (MEMORY OPTIMIZED) ---
+# --- 5. ENGINE (MEMORY OPTIMIZED) ---
 final_path = None
 if audio_mic:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
@@ -90,9 +94,10 @@ if final_path:
     gc.collect()
     if torch.cuda.is_available(): torch.cuda.empty_cache()
 
-    original_text = locals().get('original_text', "")
-    translated_text = locals().get('translated_text', "")
-    detected_lang_name = locals().get('detected_lang_name', "")
+    # These must be on one line to stay hidden
+    original_text = st.session_state.get('original_text', "")
+    translated_text = st.session_state.get('translated_text', "")
+    detected_lang_name = st.session_state.get('detected_lang_name', "")
 
 
     with st.status("🧠 AI Processing (Base Model)...") as status:
@@ -115,19 +120,42 @@ if final_path:
             status.update(label="🔊 Generating Voice...", state="running")
             tts = gTTS(text=translated_text, lang=LANGUAGES[target_lang])
             tts.save("out.mp3")
+            
+            # Step D: SAVE TO HISTORY
+            if original_text and translated_text:
+                new_entry = {
+                    "from": detected_lang_name if src_lang == "Auto-Detect" else src_lang,
+                    "to": target_lang,
+                    "original": original_text,
+                    "translated": translated_text
+                }
+                # Check to avoid duplicates before adding
+                if not st.session_state.history or st.session_state.history[0]['original'] != original_text:
+                    st.session_state.history.insert(0, new_entry)
+                    
             status.update(label="✅ Success!", state="complete")
         except Exception as e:
             st.error(f"Error: {e}")
 
-    # --- OUTPUTS OUTSIDE STATUS ---
+    # ---6. OUTPUTS OUTSIDE STATUS ---
     if original_text and translated_text:
         if src_lang == "Auto-Detect":
-            st.success(f"📡 Detected: **{detected_lang_name.title()}**")
+            st.success(f"📡 Detected: **{detected_lang_name.title()}**")     
         st.chat_message("user").write(original_text)
         st.chat_message("assistant").write(translated_text)
         st.audio("out.mp3", autoplay=True)
         
         if os.path.exists(final_path): os.remove(final_path)
+        
 else:
     st.info("💡 Record or upload to begin.")
+    
+# --- 7. SHOW HISTORY ---
+if st.session_state.history:
+    st.divider()
+    st.subheader("📜 Translation History")
+    for item in st.session_state.history[:5]:
+        with st.expander(f"🕒 {item['from']} ➡ {item['to']}"):
+            st.write(f"**Original:** {item['original']}")
+            st.write(f"**Translated:** {item['translated']}")
             
