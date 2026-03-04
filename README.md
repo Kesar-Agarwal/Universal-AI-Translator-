@@ -32,8 +32,8 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/your-username/universal-ai-translator.git](https://github.com/your-username/universal-ai-translator.git)
-   cd universal-ai-translator
+   git clone [https://github.com/your-username/speaksync-ai.git](https://github.com/your-username/speaksync-ai.git)
+   cd speaksync-ai 
 
 2. **Install requirements:**
    ```bash
